@@ -34,6 +34,7 @@ if [ $ver != "master" ]; then
 fi
 
 echo "Installing iscsi.csi.k8s.io CSI driver, version: $ver ..."
+kubectl apply -f /home/azureuser/go/src/sigs.k8s.io/azuredisk-csi-driver/deploy/rbac-csi-azuredisk-controller.yaml
 kubectl apply -f $repo/csi-iscsi-driverinfo.yaml
 kubectl apply -f $repo/csi-iscsi-node.yaml
 echo 'iscsi.csi.k8s.io CSI driver installed successfully.'

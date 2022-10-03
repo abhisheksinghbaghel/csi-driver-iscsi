@@ -1,0 +1,199 @@
+I0927 05:54:16.470937       1 driver.go:43] driver: iscsi.csi.k8s.io version: 0.2.0 nodeID: aks-agentpool-36601409-vmss000002 endpoint: unix:///csi/csi.sock
+I0927 05:54:16.471082       1 driver.go:93] enabling volume access mode: SINGLE_NODE_WRITER
+I0927 05:54:16.471094       1 driver.go:104] enabling controller service capability: CREATE_DELETE_VOLUME
+I0927 05:54:16.471757       1 utils.go:73] Using client ID: 0fc7ea3e-f478-4635-9a77-a12112160ecd
+I0927 05:54:16.472103       1 server.go:103] listening for connections on address: &net.UnixAddr{Name:"//csi/csi.sock", Net:"unix"}
+I0927 05:54:16.491371       1 utils.go:114] GRPC call: /csi.v1.Identity/Probe
+I0927 05:54:16.491396       1 utils.go:115] GRPC request: {}
+I0927 05:54:16.492564       1 utils.go:120] GRPC response: {}
+I0927 05:54:16.494125       1 utils.go:114] GRPC call: /csi.v1.Identity/GetPluginInfo
+I0927 05:54:16.494140       1 utils.go:115] GRPC request: {}
+I0927 05:54:16.494177       1 identityserver.go:32] using default GetPluginInfo
+I0927 05:54:16.494185       1 utils.go:120] GRPC response: {"name":"iscsi.csi.k8s.io","vendor_version":"0.2.0"}
+I0927 05:54:16.494679       1 utils.go:114] GRPC call: /csi.v1.Identity/GetPluginCapabilities
+I0927 05:54:16.494694       1 utils.go:115] GRPC request: {}
+I0927 05:54:16.494722       1 identityserver.go:53] using default capabilities
+I0927 05:54:16.494731       1 utils.go:120] GRPC response: {"capabilities":[{"Type":{"Service":{"type":1}}}]}
+I0927 05:54:16.495459       1 utils.go:114] GRPC call: /csi.v1.Controller/ControllerGetCapabilities
+I0927 05:54:16.495477       1 utils.go:115] GRPC request: {}
+I0927 05:54:16.495507       1 controllerserver.go:209] Using default ControllerGetCapabilities
+I0927 05:54:16.495514       1 utils.go:120] GRPC response: {"capabilities":[{"Type":{"Rpc":{"type":1}}}]}
+I0927 05:54:16.632621       1 utils.go:114] GRPC call: /csi.v1.Identity/GetPluginInfo
+I0927 05:54:16.632645       1 utils.go:115] GRPC request: {}
+I0927 05:54:16.632704       1 identityserver.go:32] using default GetPluginInfo
+I0927 05:54:16.632713       1 utils.go:120] GRPC response: {"name":"iscsi.csi.k8s.io","vendor_version":"0.2.0"}
+I0927 05:54:16.769284       1 utils.go:114] GRPC call: /csi.v1.Controller/CreateVolume
+I0927 05:54:16.769307       1 utils.go:115] GRPC request: {"capacity_range":{"required_bytes":10737418240},"name":"pvc-5ac92f90-9ca0-4122-ad83-da656e627335","parameters":{"csi.storage.k8s.io/pv/name":"pvc-5ac92f90-9ca0-4122-ad83-da656e627335","csi.storage.k8s.io/pvc/name":"persistent-storage-statefulset-azuresan-0","csi.storage.k8s.io/pvc/namespace":"default","resourcegroup":"abhib-santest-2-rg","sanname":"abhibtestsan","volumegroupname":"abhibtestvg1"},"volume_capabilities":[{"AccessType":{"Mount":{}},"access_mode":{"mode":1}}]}
+I0927 05:54:16.785233       1 utils.go:114] GRPC call: /csi.v1.Identity/GetPluginInfo
+I0927 05:54:16.785260       1 utils.go:115] GRPC request: {}
+I0927 05:54:16.785313       1 identityserver.go:32] using default GetPluginInfo
+I0927 05:54:16.785322       1 utils.go:120] GRPC response: {"name":"iscsi.csi.k8s.io","vendor_version":"0.2.0"}
+I0927 05:54:17.248897       1 utils.go:114] GRPC call: /csi.v1.Node/NodeGetInfo
+I0927 05:54:17.248927       1 utils.go:115] GRPC request: {}
+I0927 05:54:17.248980       1 utils.go:120] GRPC response: {"node_id":"aks-agentpool-36601409-vmss000002"}
+E0927 05:54:34.618757       1 controllerserver.go:122] CreateVolume(abhib-santest-2-rg#abhibtestsan#abhibtestvg1#pvc-5ac92f90-9ca0-4122-ad83-da656e627335) failed to create volume: GET https://management.azure.com/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/b1970a38-e713-4a61-8645-e4adb39d31c3
+--------------------------------------------------------------------------------
+RESPONSE 403: 403 Forbidden
+ERROR CODE: AuthorizationFailed
+--------------------------------------------------------------------------------
+{
+  "error": {
+    "code": "AuthorizationFailed",
+    "message": "The client '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' with object id '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' does not have authorization to perform action 'Microsoft.ElasticSan/locations/asyncoperations/read' over scope '/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/b1970a38-e713-4a61-8645-e4adb39d31c3' or the scope is invalid. If access was recently granted, please refresh your credentials."
+  }
+}
+--------------------------------------------------------------------------------
+E0927 05:54:34.618852       1 utils.go:118] GRPC error: GET https://management.azure.com/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/b1970a38-e713-4a61-8645-e4adb39d31c3
+--------------------------------------------------------------------------------
+RESPONSE 403: 403 Forbidden
+ERROR CODE: AuthorizationFailed
+--------------------------------------------------------------------------------
+{
+  "error": {
+    "code": "AuthorizationFailed",
+    "message": "The client '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' with object id '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' does not have authorization to perform action 'Microsoft.ElasticSan/locations/asyncoperations/read' over scope '/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/b1970a38-e713-4a61-8645-e4adb39d31c3' or the scope is invalid. If access was recently granted, please refresh your credentials."
+  }
+}
+--------------------------------------------------------------------------------
+I0927 05:54:35.620575       1 utils.go:114] GRPC call: /csi.v1.Controller/CreateVolume
+I0927 05:54:35.620601       1 utils.go:115] GRPC request: {"capacity_range":{"required_bytes":10737418240},"name":"pvc-5ac92f90-9ca0-4122-ad83-da656e627335","parameters":{"csi.storage.k8s.io/pv/name":"pvc-5ac92f90-9ca0-4122-ad83-da656e627335","csi.storage.k8s.io/pvc/name":"persistent-storage-statefulset-azuresan-0","csi.storage.k8s.io/pvc/namespace":"default","resourcegroup":"abhib-santest-2-rg","sanname":"abhibtestsan","volumegroupname":"abhibtestvg1"},"volume_capabilities":[{"AccessType":{"Mount":{}},"access_mode":{"mode":1}}]}
+E0927 05:54:53.012648       1 controllerserver.go:122] CreateVolume(abhib-santest-2-rg#abhibtestsan#abhibtestvg1#pvc-5ac92f90-9ca0-4122-ad83-da656e627335) failed to create volume: GET https://management.azure.com/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/39407d49-6262-4e36-b6e0-4cbd42ea5db5
+--------------------------------------------------------------------------------
+RESPONSE 403: 403 Forbidden
+ERROR CODE: AuthorizationFailed
+--------------------------------------------------------------------------------
+{
+  "error": {
+    "code": "AuthorizationFailed",
+    "message": "The client '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' with object id '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' does not have authorization to perform action 'Microsoft.ElasticSan/locations/asyncoperations/read' over scope '/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/39407d49-6262-4e36-b6e0-4cbd42ea5db5' or the scope is invalid. If access was recently granted, please refresh your credentials."
+  }
+}
+--------------------------------------------------------------------------------
+E0927 05:54:53.012706       1 utils.go:118] GRPC error: GET https://management.azure.com/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/39407d49-6262-4e36-b6e0-4cbd42ea5db5
+--------------------------------------------------------------------------------
+RESPONSE 403: 403 Forbidden
+ERROR CODE: AuthorizationFailed
+--------------------------------------------------------------------------------
+{
+  "error": {
+    "code": "AuthorizationFailed",
+    "message": "The client '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' with object id '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' does not have authorization to perform action 'Microsoft.ElasticSan/locations/asyncoperations/read' over scope '/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/39407d49-6262-4e36-b6e0-4cbd42ea5db5' or the scope is invalid. If access was recently granted, please refresh your credentials."
+  }
+}
+--------------------------------------------------------------------------------
+I0927 05:54:55.014559       1 utils.go:114] GRPC call: /csi.v1.Controller/CreateVolume
+I0927 05:54:55.014591       1 utils.go:115] GRPC request: {"capacity_range":{"required_bytes":10737418240},"name":"pvc-5ac92f90-9ca0-4122-ad83-da656e627335","parameters":{"csi.storage.k8s.io/pv/name":"pvc-5ac92f90-9ca0-4122-ad83-da656e627335","csi.storage.k8s.io/pvc/name":"persistent-storage-statefulset-azuresan-0","csi.storage.k8s.io/pvc/namespace":"default","resourcegroup":"abhib-santest-2-rg","sanname":"abhibtestsan","volumegroupname":"abhibtestvg1"},"volume_capabilities":[{"AccessType":{"Mount":{}},"access_mode":{"mode":1}}]}
+E0927 05:55:12.363385       1 controllerserver.go:122] CreateVolume(abhib-santest-2-rg#abhibtestsan#abhibtestvg1#pvc-5ac92f90-9ca0-4122-ad83-da656e627335) failed to create volume: GET https://management.azure.com/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/610f62ef-240f-4cc4-b98b-dc8d156e4427
+--------------------------------------------------------------------------------
+RESPONSE 403: 403 Forbidden
+ERROR CODE: AuthorizationFailed
+--------------------------------------------------------------------------------
+{
+  "error": {
+    "code": "AuthorizationFailed",
+    "message": "The client '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' with object id '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' does not have authorization to perform action 'Microsoft.ElasticSan/locations/asyncoperations/read' over scope '/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/610f62ef-240f-4cc4-b98b-dc8d156e4427' or the scope is invalid. If access was recently granted, please refresh your credentials."
+  }
+}
+--------------------------------------------------------------------------------
+E0927 05:55:12.363434       1 utils.go:118] GRPC error: GET https://management.azure.com/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/610f62ef-240f-4cc4-b98b-dc8d156e4427
+--------------------------------------------------------------------------------
+RESPONSE 403: 403 Forbidden
+ERROR CODE: AuthorizationFailed
+--------------------------------------------------------------------------------
+{
+  "error": {
+    "code": "AuthorizationFailed",
+    "message": "The client '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' with object id '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' does not have authorization to perform action 'Microsoft.ElasticSan/locations/asyncoperations/read' over scope '/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/610f62ef-240f-4cc4-b98b-dc8d156e4427' or the scope is invalid. If access was recently granted, please refresh your credentials."
+  }
+}
+--------------------------------------------------------------------------------
+I0927 05:55:15.115745       1 utils.go:114] GRPC call: /csi.v1.Identity/Probe
+I0927 05:55:15.115769       1 utils.go:115] GRPC request: {}
+I0927 05:55:15.115838       1 utils.go:120] GRPC response: {}
+I0927 05:55:16.365670       1 utils.go:114] GRPC call: /csi.v1.Controller/CreateVolume
+I0927 05:55:16.365717       1 utils.go:115] GRPC request: {"capacity_range":{"required_bytes":10737418240},"name":"pvc-5ac92f90-9ca0-4122-ad83-da656e627335","parameters":{"csi.storage.k8s.io/pv/name":"pvc-5ac92f90-9ca0-4122-ad83-da656e627335","csi.storage.k8s.io/pvc/name":"persistent-storage-statefulset-azuresan-0","csi.storage.k8s.io/pvc/namespace":"default","resourcegroup":"abhib-santest-2-rg","sanname":"abhibtestsan","volumegroupname":"abhibtestvg1"},"volume_capabilities":[{"AccessType":{"Mount":{}},"access_mode":{"mode":1}}]}
+E0927 05:55:33.871596       1 controllerserver.go:122] CreateVolume(abhib-santest-2-rg#abhibtestsan#abhibtestvg1#pvc-5ac92f90-9ca0-4122-ad83-da656e627335) failed to create volume: GET https://management.azure.com/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/47b9f959-6e69-4126-8b76-0ea92d77bc39
+--------------------------------------------------------------------------------
+RESPONSE 403: 403 Forbidden
+ERROR CODE: AuthorizationFailed
+--------------------------------------------------------------------------------
+{
+  "error": {
+    "code": "AuthorizationFailed",
+    "message": "The client '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' with object id '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' does not have authorization to perform action 'Microsoft.ElasticSan/locations/asyncoperations/read' over scope '/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/47b9f959-6e69-4126-8b76-0ea92d77bc39' or the scope is invalid. If access was recently granted, please refresh your credentials."
+  }
+}
+--------------------------------------------------------------------------------
+E0927 05:55:33.871683       1 utils.go:118] GRPC error: GET https://management.azure.com/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/47b9f959-6e69-4126-8b76-0ea92d77bc39
+--------------------------------------------------------------------------------
+RESPONSE 403: 403 Forbidden
+ERROR CODE: AuthorizationFailed
+--------------------------------------------------------------------------------
+{
+  "error": {
+    "code": "AuthorizationFailed",
+    "message": "The client '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' with object id '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' does not have authorization to perform action 'Microsoft.ElasticSan/locations/asyncoperations/read' over scope '/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/47b9f959-6e69-4126-8b76-0ea92d77bc39' or the scope is invalid. If access was recently granted, please refresh your credentials."
+  }
+}
+--------------------------------------------------------------------------------
+I0927 05:55:41.873685       1 utils.go:114] GRPC call: /csi.v1.Controller/CreateVolume
+I0927 05:55:41.873728       1 utils.go:115] GRPC request: {"capacity_range":{"required_bytes":10737418240},"name":"pvc-5ac92f90-9ca0-4122-ad83-da656e627335","parameters":{"csi.storage.k8s.io/pv/name":"pvc-5ac92f90-9ca0-4122-ad83-da656e627335","csi.storage.k8s.io/pvc/name":"persistent-storage-statefulset-azuresan-0","csi.storage.k8s.io/pvc/namespace":"default","resourcegroup":"abhib-santest-2-rg","sanname":"abhibtestsan","volumegroupname":"abhibtestvg1"},"volume_capabilities":[{"AccessType":{"Mount":{}},"access_mode":{"mode":1}}]}
+I0927 05:55:45.115796       1 utils.go:114] GRPC call: /csi.v1.Identity/Probe
+I0927 05:55:45.115825       1 utils.go:115] GRPC request: {}
+I0927 05:55:45.115900       1 utils.go:120] GRPC response: {}
+E0927 05:55:59.438798       1 controllerserver.go:122] CreateVolume(abhib-santest-2-rg#abhibtestsan#abhibtestvg1#pvc-5ac92f90-9ca0-4122-ad83-da656e627335) failed to create volume: GET https://management.azure.com/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/cf80c7ca-72dd-44b3-ad6d-c61b79137102
+--------------------------------------------------------------------------------
+RESPONSE 403: 403 Forbidden
+ERROR CODE: AuthorizationFailed
+--------------------------------------------------------------------------------
+{
+  "error": {
+    "code": "AuthorizationFailed",
+    "message": "The client '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' with object id '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' does not have authorization to perform action 'Microsoft.ElasticSan/locations/asyncoperations/read' over scope '/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/cf80c7ca-72dd-44b3-ad6d-c61b79137102' or the scope is invalid. If access was recently granted, please refresh your credentials."
+  }
+}
+--------------------------------------------------------------------------------
+E0927 05:55:59.438855       1 utils.go:118] GRPC error: GET https://management.azure.com/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/cf80c7ca-72dd-44b3-ad6d-c61b79137102
+--------------------------------------------------------------------------------
+RESPONSE 403: 403 Forbidden
+ERROR CODE: AuthorizationFailed
+--------------------------------------------------------------------------------
+{
+  "error": {
+    "code": "AuthorizationFailed",
+    "message": "The client '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' with object id '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' does not have authorization to perform action 'Microsoft.ElasticSan/locations/asyncoperations/read' over scope '/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/cf80c7ca-72dd-44b3-ad6d-c61b79137102' or the scope is invalid. If access was recently granted, please refresh your credentials."
+  }
+}
+--------------------------------------------------------------------------------
+I0927 05:56:15.114937       1 utils.go:114] GRPC call: /csi.v1.Identity/Probe
+I0927 05:56:15.114963       1 utils.go:115] GRPC request: {}
+I0927 05:56:15.115027       1 utils.go:120] GRPC response: {}
+I0927 05:56:15.441395       1 utils.go:114] GRPC call: /csi.v1.Controller/CreateVolume
+I0927 05:56:15.441429       1 utils.go:115] GRPC request: {"capacity_range":{"required_bytes":10737418240},"name":"pvc-5ac92f90-9ca0-4122-ad83-da656e627335","parameters":{"csi.storage.k8s.io/pv/name":"pvc-5ac92f90-9ca0-4122-ad83-da656e627335","csi.storage.k8s.io/pvc/name":"persistent-storage-statefulset-azuresan-0","csi.storage.k8s.io/pvc/namespace":"default","resourcegroup":"abhib-santest-2-rg","sanname":"abhibtestsan","volumegroupname":"abhibtestvg1"},"volume_capabilities":[{"AccessType":{"Mount":{}},"access_mode":{"mode":1}}]}
+E0927 05:56:32.806619       1 controllerserver.go:122] CreateVolume(abhib-santest-2-rg#abhibtestsan#abhibtestvg1#pvc-5ac92f90-9ca0-4122-ad83-da656e627335) failed to create volume: GET https://management.azure.com/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/2069fd61-4748-4501-b4a8-a056be694b15
+--------------------------------------------------------------------------------
+RESPONSE 403: 403 Forbidden
+ERROR CODE: AuthorizationFailed
+--------------------------------------------------------------------------------
+{
+  "error": {
+    "code": "AuthorizationFailed",
+    "message": "The client '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' with object id '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' does not have authorization to perform action 'Microsoft.ElasticSan/locations/asyncoperations/read' over scope '/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/2069fd61-4748-4501-b4a8-a056be694b15' or the scope is invalid. If access was recently granted, please refresh your credentials."
+  }
+}
+--------------------------------------------------------------------------------
+E0927 05:56:32.806676       1 utils.go:118] GRPC error: GET https://management.azure.com/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/2069fd61-4748-4501-b4a8-a056be694b15
+--------------------------------------------------------------------------------
+RESPONSE 403: 403 Forbidden
+ERROR CODE: AuthorizationFailed
+--------------------------------------------------------------------------------
+{
+  "error": {
+    "code": "AuthorizationFailed",
+    "message": "The client '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' with object id '3fd00ebc-d64d-4f3a-ada3-0f488d2e75b8' does not have authorization to perform action 'Microsoft.ElasticSan/locations/asyncoperations/read' over scope '/subscriptions/d64ddb0c-7399-4529-a2b6-037b33265372/providers/Microsoft.ElasticSan/locations/eastus2euap/asyncoperations/2069fd61-4748-4501-b4a8-a056be694b15' or the scope is invalid. If access was recently granted, please refresh your credentials."
+  }
+}
+--------------------------------------------------------------------------------
+I0927 05:56:45.114944       1 utils.go:114] GRPC call: /csi.v1.Identity/Probe
+I0927 05:56:45.114966       1 utils.go:115] GRPC request: {}
+I0927 05:56:45.115037       1 utils.go:120] GRPC response: {}

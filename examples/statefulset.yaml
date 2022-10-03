@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: statefulset-azuresan
+  labels:
+    app: nginx
+spec:
+  podManagementPolicy: Parallel  # default is OrderedReady
+  serviceName: statefulset-azuresan
+  replicas: 500
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+        - name: statefulset-azuresan
+          image: mcr.microsoft.com/oss/nginx/nginx:1.19.5
+          command:
+            - "/bin/bash"
+            - "-c"
+            - set -euo pipefail; while true; do echo $(date) >> /mnt/azuresan/outfile; sleep 1; done
+          volumeMounts:
+            - name: persistent-storage-new
+              mountPath: /mnt/azuresan
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: nginx
+  volumeClaimTemplates:
+    - metadata:
+        name: persistent-storage-new
+        annotations:
+          volume.beta.kubernetes.io/storage-class: managed-csi-san
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 16Gi

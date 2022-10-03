@@ -16,17 +16,62 @@ spec:
         app: csi-iscsi-node
     spec:
       hostNetwork: true  # original iscsi connection would be broken without hostNetwork setting
+      serviceAccountName: csi-azuresan-controller-sa
       dnsPolicy: Default
       nodeSelector:
         kubernetes.io/os: linux
       containers:
+        - name: csi-provisioner
+          image: mcr.microsoft.com/oss/kubernetes-csi/csi-provisioner:v3.1.0
+          args:
+            - "--feature-gates=Topology=true"
+            - "--csi-address=$(ADDRESS)"
+            - "--v=2"
+            - "--timeout=120s"
+            - "--leader-election"
+            - "--leader-election-namespace=kube-system"
+            - "--worker-threads=40"
+            - "--extra-create-metadata=true"
+            - "--strict-topology=false"
+          env:
+            - name: ADDRESS
+              value: /csi/csi.sock
+          volumeMounts:
+            - mountPath: /csi
+              name: socket-dir
+          resources:
+            limits:
+              memory: 500Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
+        - name: csi-attacher
+          image: mcr.microsoft.com/oss/kubernetes-csi/csi-attacher:v3.1.0
+          args:
+            - "-v=2"
+            - "-csi-address=$(ADDRESS)"
+            - "-timeout=120s"
+            - "-leader-election"
+          env:
+            - name: ADDRESS
+              value: /csi/csi.sock
+          volumeMounts:
+            - mountPath: /csi
+              name: socket-dir
+          resources:
+            limits:
+              cpu: 100m
+              memory: 200Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
         - name: liveness-probe
           image: registry.k8s.io/sig-storage/livenessprobe:v2.1.0
           args:
             - --csi-address=/csi/csi.sock
             - --probe-timeout=3s
             - --health-port=29753
-            - --v=2
+            - --v=5
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
@@ -44,7 +89,7 @@ spec:
             privileged: true
           image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.1.0
           args:
-            - --v=2
+            - --v=5
             - --csi-address=/csi/csi.sock
             - --kubelet-registration-path=/var/lib/kubelet/plugins/iscsi.csi.k8s.io/csi.sock
           env:
@@ -69,7 +114,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: gcr.io/k8s-staging-sig-storage/iscsiplugin:canary
+          image: ramants17/iscsiplugin:latest
           args:
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -81,6 +126,9 @@ spec:
                   fieldPath: spec.nodeName
             - name: CSI_ENDPOINT
               value: unix:///csi/csi.sock
+          volumeMounts:
+            - name: azure-cred
+              mountPath: /etc/kubernetes/
           ports:
             - containerPort: 29753
               name: healthz
@@ -93,7 +141,7 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 10
             periodSeconds: 30
-          imagePullPolicy: "IfNotPresent"
+          imagePullPolicy: "Always"
           volumeMounts:
             - name: socket-dir
               mountPath: /csi
@@ -110,6 +158,8 @@ spec:
               subPath: iscsiadm
             - name: iscsi-csi-run-dir
               mountPath: /var/run/iscsi.csi.k8s.io
+            - mountPath: /etc/kubernetes/
+              name: azure-cred
           resources:
             limits:
               memory: 300Mi
@@ -143,6 +193,10 @@ spec:
         - name: iscsi-csi-run-dir
           hostPath:
             path: /var/run/iscsi.csi.k8s.io
+        - name: azure-cred
+          hostPath:
+            path: /etc/kubernetes/
+            type: DirectoryOrCreate
 ---
 kind: ConfigMap
 apiVersion: v1

@@ -18,13 +18,22 @@ package iscsi
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/elasticsans/armelasticsans"
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/kubernetes-csi/csi-lib-utils/protosanitizer"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	klog "k8s.io/klog/v2"
+
+	azure "sigs.k8s.io/cloud-provider-azure/pkg/provider"
+)
+
+const (
+	GiB = 1024 * 1024 * 1024
 )
 
 func NewDefaultIdentityServer(d *driver) *IdentityServer {
@@ -33,9 +42,51 @@ func NewDefaultIdentityServer(d *driver) *IdentityServer {
 	}
 }
 
+// GetCloudProviderFromClient get Azure Cloud Provider
+func GetAuthConfig() (*azure.Config, error) {
+	credFile := "/etc/kubernetes/azure.json"
+	credFileConfig, err := os.Open(credFile)
+	if err != nil {
+		err = fmt.Errorf("failed to load cloud config from file %q: %v", credFile, err)
+		klog.Errorf(err.Error())
+		return nil, err
+	}
+	defer credFileConfig.Close()
+
+	config, err := azure.ParseConfig(credFileConfig)
+	if err != nil {
+		err = fmt.Errorf("failed to parse cloud config file %q: %v", credFile, err)
+		klog.Errorf(err.Error())
+		return nil, err
+	}
+
+	return config, nil
+}
+
 func NewControllerServer(d *driver) *ControllerServer {
+
+	config, err := GetAuthConfig()
+	if err != nil {
+		klog.Errorf("Failed to read auth config %v", err.Error())
+	}
+
+	klog.V(2).Infof("Using client ID: %s", config.UserAssignedIdentityID)
+	clientID := azidentity.ClientID(config.UserAssignedIdentityID)
+	miCred :=  &azidentity.ManagedIdentityCredentialOptions{ID: clientID}
+
+	cred, err := azidentity.NewManagedIdentityCredential(miCred)
+	if err != nil {
+		klog.Errorf("Failed to read default creds %v", err.Error())
+	}
+
+	client, err := armelasticsans.NewVolumesClient(config.SubscriptionID, cred, nil)
+	if err != nil {
+		klog.Errorf("Failed to create volume client %v", err.Error())
+	}
+
 	return &ControllerServer{
-		Driver: d,
+		Driver:       d,
+		VolumeClient: client,
 	}
 }
 
@@ -69,4 +120,39 @@ func logGRPC(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, h
 		klog.V(5).Infof("GRPC response: %s", protosanitizer.StripSecrets(resp))
 	}
 	return resp, err
+}
+
+// RoundUpBytes rounds up the volume size in bytes upto multiplications of GiB
+// in the unit of Bytes
+func RoundUpBytes(volumeSizeBytes int64) int64 {
+	return roundUpSize(volumeSizeBytes, GiB) * GiB
+}
+
+// RoundUpGiB rounds up the volume size in bytes upto multiplications of GiB
+// in the unit of GiB
+func RoundUpGiB(volumeSizeBytes int64) int64 {
+	return roundUpSize(volumeSizeBytes, GiB)
+}
+
+// BytesToGiB conversts Bytes to GiB
+func BytesToGiB(volumeSizeBytes int64) int64 {
+	return volumeSizeBytes / GiB
+}
+
+// GiBToBytes converts GiB to Bytes
+func GiBToBytes(volumeSizeGiB int64) int64 {
+	return volumeSizeGiB * GiB
+}
+
+// roundUpSize calculates how many allocation units are needed to accommodate
+// a volume of given size. E.g. when user wants 1500MiB volume, while Azure File
+// allocates volumes in gibibyte-sized chunks,
+// RoundUpSize(1500 * 1024*1024, 1024*1024*1024) returns '2'
+// (2 GiB is the smallest allocatable volume that can hold 1500MiB)
+func roundUpSize(volumeSizeBytes int64, allocationUnitBytes int64) int64 {
+	roundedUp := volumeSizeBytes / allocationUnitBytes
+	if volumeSizeBytes%allocationUnitBytes > 0 {
+		roundedUp++
+	}
+	return roundedUp
 }

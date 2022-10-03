@@ -5,8 +5,7 @@ metadata:
   name: nginx
 spec:
   containers:
-    - image: maersk/nginx
-      imagePullPolicy: Always
+    - image: mcr.microsoft.com/oss/nginx/nginx:1.19.5
       name: nginx
       ports:
         - containerPort: 80
@@ -17,4 +16,4 @@ spec:
   volumes:
     - name: iscsi-volume
       persistentVolumeClaim:
-        claimName: iscsiplugin-pvc
+        claimName: persistent-storage-statefulset-azuresan-0
